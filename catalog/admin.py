@@ -3,7 +3,6 @@ from .models import Author, Genre, Book, BookInstance, Language
 
 
 class BooksInline(admin.TabularInline):
-    """Встроенное отображение книг на странице автора (задание 'Проверь себя')."""
     model = Book
     extra = 0
 
@@ -16,7 +15,6 @@ class AuthorAdmin(admin.ModelAdmin):
 
 
 class BooksInstanceInline(admin.TabularInline):
-    """Встроенное отображение экземпляров на странице книги."""
     model = BookInstance
     extra = 0
 
@@ -29,7 +27,7 @@ class BookAdmin(admin.ModelAdmin):
 
 @admin.register(BookInstance)
 class BookInstanceAdmin(admin.ModelAdmin):
-    list_display = ('book', 'status', 'due_back', 'id')
+    list_display = ('book', 'status', 'borrower', 'due_back', 'id')
     list_filter = ('status', 'due_back')
 
     fieldsets = (
@@ -37,7 +35,7 @@ class BookInstanceAdmin(admin.ModelAdmin):
             'fields': ('book', 'imprint', 'id')
         }),
         ('Availability', {
-            'fields': ('status', 'due_back')
+            'fields': ('status', 'due_back', 'borrower')
         }),
     )
 
