@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Local Library Home</h1>
+  <p>
+    Добро пожаловать в <em>LocalLibrary</em> — базовый веб-сайт на Django,
+    разработанный в качестве учебного примера на Mozilla Developer Network.
+  </p>
+  <h2>Динамический контент</h2>
+  <p>В библиотеке имеется следующее количество записей:</p>
+  <ul>
+    <li><strong>Книги:</strong> {{ num_books }}</li>
+    <li><strong>Экземпляры:</strong> {{ num_instances }}</li>
+    <li><strong>Доступные экземпляры:</strong> {{ num_instances_available }}</li>
+    <li><strong>Авторы:</strong> {{ num_authors }}</li>
+  </ul>
+{% endblock %}
