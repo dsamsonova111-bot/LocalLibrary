@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views import generic
 from .models import Book, Author, BookInstance, Genre
 
 
@@ -14,17 +15,21 @@ def index(request):
     # Метод 'all()' применен по умолчанию
     num_authors = Author.objects.count()
 
+    # Количество посещений этого представления, подсчитанное в переменной сессии
+    num_visits = request.session.get('num_visits', 0)
+    num_visits += 1
+    request.session['num_visits'] = num_visits
+
     context = {
         'num_books': num_books,
         'num_instances': num_instances,
         'num_instances_available': num_instances_available,
         'num_authors': num_authors,
+        'num_visits': num_visits,
     }
 
     # Отрисовка HTML-шаблона index.html с данными внутри переменной контекста context
     return render(request, 'index.html', context=context)
-
-from django.views import generic
 
 
 class BookListView(generic.ListView):
