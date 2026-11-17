@@ -12,12 +12,17 @@ from .forms import RenewBookForm
 
 
 def index(request):
-    """Функция отображения для домашней страницы сайта."""
+    """Функция отображения для домашней страницы сайта (Часть 5 + Проверь себя + Часть 7)."""
     num_books = Book.objects.all().count()
     num_instances = BookInstance.objects.all().count()
     num_instances_available = BookInstance.objects.filter(status__exact='a').count()
     num_authors = Author.objects.count()
 
+    # Проверь себя (Часть 5): количество жанров и книг, содержащих слово в названии
+    num_genres = Genre.objects.count()
+    num_books_word = Book.objects.filter(title__icontains='война').count()
+
+    # Часть 7: счётчик посещений в сессии
     num_visits = request.session.get('num_visits', 0)
     num_visits += 1
     request.session['num_visits'] = num_visits
@@ -27,6 +32,8 @@ def index(request):
         'num_instances': num_instances,
         'num_instances_available': num_instances_available,
         'num_authors': num_authors,
+        'num_genres': num_genres,
+        'num_books_word': num_books_word,
         'num_visits': num_visits,
     }
 
@@ -42,6 +49,7 @@ class BookDetailView(generic.DetailView):
     model = Book
 
 
+# Проверь себя (Часть 6): списки и детальная карточка авторов
 class AuthorListView(generic.ListView):
     model = Author
     paginate_by = 10
@@ -52,7 +60,7 @@ class AuthorDetailView(generic.DetailView):
 
 
 class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
-    """Список книг, выданных текущему пользователю."""
+    """Список книг, выданных текущему пользователю (Часть 8)."""
     model = BookInstance
     template_name = 'catalog/bookinstance_list_borrowed_user.html'
     paginate_by = 10
@@ -66,7 +74,7 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
 
 
 class LoanedBooksAllListView(PermissionRequiredMixin, generic.ListView):
-    """Список всех выданных книг (для персонала с правом can_mark_returned)."""
+    """Список всех выданных книг для персонала (Проверь себя, Часть 8)."""
     model = BookInstance
     permission_required = 'catalog.can_mark_returned'
     template_name = 'catalog/bookinstance_list_borrowed_all.html'
@@ -79,7 +87,7 @@ class LoanedBooksAllListView(PermissionRequiredMixin, generic.ListView):
 @login_required
 @permission_required('catalog.can_mark_returned', raise_exception=True)
 def renew_book_librarian(request, pk):
-    """Представление для продления конкретного экземпляра книги библиотекарем."""
+    """Продление срока возврата книги библиотекарем (Часть 9)."""
     book_instance = get_object_or_404(BookInstance, pk=pk)
 
     if request.method == 'POST':
@@ -100,6 +108,7 @@ def renew_book_librarian(request, pk):
     return render(request, 'catalog/book_renew_librarian.html', context)
 
 
+# Часть 9: CRUD для авторов
 class AuthorCreate(PermissionRequiredMixin, CreateView):
     model = Author
     fields = ['first_name', 'last_name', 'date_of_birth', 'date_of_death']
@@ -122,7 +131,35 @@ class AuthorDelete(PermissionRequiredMixin, DeleteView):
         try:
             self.object.delete()
             return HttpResponseRedirect(self.success_url)
-        except Exception as e:
+        except Exception:
             return HttpResponseRedirect(
                 reverse("author-delete", kwargs={"pk": self.object.pk})
+            )
+
+
+# Проверь себя (Часть 9): CRUD для книг
+class BookCreate(PermissionRequiredMixin, CreateView):
+    model = Book
+    fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language']
+    permission_required = 'catalog.add_book'
+
+
+class BookUpdate(PermissionRequiredMixin, UpdateView):
+    model = Book
+    fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language']
+    permission_required = 'catalog.change_book'
+
+
+class BookDelete(PermissionRequiredMixin, DeleteView):
+    model = Book
+    success_url = reverse_lazy('books')
+    permission_required = 'catalog.delete_book'
+
+    def form_valid(self, form):
+        try:
+            self.object.delete()
+            return HttpResponseRedirect(self.success_url)
+        except Exception:
+            return HttpResponseRedirect(
+                reverse("book-delete", kwargs={"pk": self.object.pk})
             )

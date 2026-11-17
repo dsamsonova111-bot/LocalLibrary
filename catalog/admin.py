@@ -3,6 +3,7 @@ from .models import Author, Genre, Book, BookInstance, Language
 
 
 class BooksInline(admin.TabularInline):
+    """Встроенное отображение книг внутри автора (Проверь себя, Часть 4)."""
     model = Book
     extra = 0
 

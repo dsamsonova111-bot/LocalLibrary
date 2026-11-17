@@ -48,6 +48,9 @@
                 {% if perms.catalog.add_author %}
                   <li><a href="{% url 'author-create' %}">Добавить автора</a></li>
                 {% endif %}
+                {% if perms.catalog.add_book %}
+                  <li><a href="{% url 'book-create' %}">Добавить книгу</a></li>
+                {% endif %}
               </ul>
             {% endif %}
           {% endblock %}

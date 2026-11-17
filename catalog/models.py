@@ -8,7 +8,7 @@ from django.db.models.functions import Lower
 
 
 class Genre(models.Model):
-    """Модель, представляющая книжный жанр (например, Научная фантастика, Поэзия)."""
+    """Модель, представляющая книжный жанр."""
     name = models.CharField(
         max_length=200,
         unique=True,
@@ -32,7 +32,7 @@ class Genre(models.Model):
 
 
 class Language(models.Model):
-    """Модель, представляющая язык книги (например, Английский, Французский, Японский)."""
+    """Модель, представляющая язык книги (Проверь себя, Часть 3)."""
     name = models.CharField(
         max_length=200,
         unique=True,
@@ -47,7 +47,7 @@ class Language(models.Model):
 
 
 class Book(models.Model):
-    """Модель, представляющая книгу (но не конкретный экземпляр книги)."""
+    """Модель, представляющая книгу (но не конкретный экземпляр)."""
     title = models.CharField(max_length=200)
     author = models.ForeignKey('Author', on_delete=models.RESTRICT, null=True)
     summary = models.TextField(
@@ -77,14 +77,13 @@ class Book(models.Model):
         return reverse('book-detail', args=[str(self.id)])
 
     def display_genre(self):
-        """Создает строку для жанра. Требуется для отображения жанра в админке."""
         return ', '.join([genre.name for genre in self.genre.all()[:3]])
 
     display_genre.short_description = 'Genre'
 
 
 class BookInstance(models.Model):
-    """Модель, представляющая конкретный экземпляр книги (который можно взять в библиотеке)."""
+    """Модель, представляющая конкретный экземпляр книги."""
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
@@ -117,7 +116,6 @@ class BookInstance(models.Model):
 
     @property
     def is_overdue(self):
-        """Определяет, просрочен ли возврат книги на основе даты возврата и текущей даты."""
         return bool(self.due_back and date.today() > self.due_back)
 
     class Meta:
