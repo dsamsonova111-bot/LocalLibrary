@@ -32,7 +32,7 @@ class Genre(models.Model):
 
 
 class Language(models.Model):
-    """Модель, представляющая язык книги (Проверь себя, Часть 3)."""
+    """Модель, представляющая язык книги."""
     name = models.CharField(
         max_length=200,
         unique=True,
@@ -124,6 +124,9 @@ class BookInstance(models.Model):
 
     def __str__(self):
         return f'{self.id} ({self.book.title})'
+
+    def get_absolute_url(self):
+        return reverse('bookinstance-detail', args=[str(self.id)])
 
 
 class Author(models.Model):

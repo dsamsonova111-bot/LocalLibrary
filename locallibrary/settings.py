@@ -62,7 +62,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Домашнее задание (Часть 2): локализация и часовой пояс
+
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Asia/Tomsk'
 USE_I18N = True
@@ -72,6 +72,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Часть 8: редирект после входа и консольный почтовый бэкенд
+
 LOGIN_REDIRECT_URL = '/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

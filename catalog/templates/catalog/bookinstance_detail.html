@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+{% block content %}
+  <h1>Экземпляр книги: {{ bookinstance.book.title }}</h1>
+  <p><strong>ID:</strong> {{ bookinstance.id }}</p>
+  <p><strong>Издательство:</strong> {{ bookinstance.imprint }}</p>
+  <p><strong>Статус:</strong> {{ bookinstance.get_status_display }}</p>
+  {% if bookinstance.due_back %}
+    <p><strong>Дата возврата:</strong> {{ bookinstance.due_back }}</p>
+  {% endif %}
+{% endblock %}
+
+{% block sidebar %}
+  {{ block.super }}
+  {% if perms.catalog.change_bookinstance or perms.catalog.delete_bookinstance %}
+    <hr>
+    <ul class="sidebar-nav">
+      {% if perms.catalog.change_bookinstance %}
+        <li><a href="{% url 'bookinstance-update' bookinstance.id %}">Изменить экземпляр</a></li>
+      {% endif %}
+      {% if perms.catalog.delete_bookinstance %}
+        <li><a href="{% url 'bookinstance-delete' bookinstance.id %}">Удалить экземпляр</a></li>
+      {% endif %}
+    </ul>
+  {% endif %}
+{% endblock %}

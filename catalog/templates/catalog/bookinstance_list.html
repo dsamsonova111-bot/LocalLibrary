@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+{% block content %}
+  <h1>Экземпляры книг</h1>
+  {% if bookinstance_list %}
+    <ul>
+      {% for bookinst in bookinstance_list %}
+        <li><a href="{{ bookinst.get_absolute_url }}">{{ bookinst.book.title }} ({{ bookinst.id }})</a> — {{ bookinst.get_status_display }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Экземпляров книг пока нет.</p>
+  {% endif %}
+{% endblock %}
